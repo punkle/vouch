@@ -15,12 +15,17 @@ spec:
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
+      {{- if (or .Values.deployment.annotations (not .Values.existingSecretName)) }}
       annotations:
-{{- if not .Values.existingSecretName }}
+      {{- else }}
+      annotations: {}
+      {{- end }}
+      {{- with .Values.deployment.annotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if not .Values.existingSecretName }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
-{{- else }}
-        {}
-{{ end }}
+      {{- end }}
       labels:
         app.kubernetes.io/name: {{ include "vouch.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}

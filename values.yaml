@@ -16,6 +16,9 @@ service:
   type: ClusterIP
   port: 9090
 
+deployment:
+  annotations: {}
+
 ingress:
   enabled: false
   annotations: {}
